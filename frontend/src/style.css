@@ -1,0 +1,36 @@
+@import 'primeicons/primeicons.css';
+
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+:root {
+  --erp-bg: #f5f7fa;
+  --erp-card: #ffffff;
+  --erp-text-main: #1e293b; /* slate 800 */
+  --erp-text-muted: #64748b; /* slate 500 */
+  --erp-border: #e2e8f0; /* slate 200 */
+}
+
+/* Global Typography & Background */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--erp-bg);
+  color: var(--erp-text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
