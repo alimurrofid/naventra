@@ -44,15 +44,24 @@ class JournalEngine
                 'total_credit'   => $dto->totalCredit(),
             ]);
 
-            // Create journal detail lines
+            // Create journal detail lines using Bulk Insert (P-02)
+            $detailData = [];
+            $now = now();
+            $userId = \Illuminate\Support\Facades\Auth::id();
+            
             foreach ($dto->entries as $entry) {
-                JournalDetail::create([
+                $detailData[] = [
                     'journal_id' => $journal->id,
                     'coa_id'     => $entry->coa_id,
                     'debit'      => $entry->debit,
                     'credit'     => $entry->credit,
-                ]);
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
             }
+            JournalDetail::insert($detailData);
 
             return $journal->load('details');
         });
@@ -121,17 +130,14 @@ class JournalEngine
     {
         $prefix = 'JRN' . now()->format('Ym');
 
-        $lastJournal = Journal::where('journal_number', 'like', $prefix . '%')
-            ->orderByDesc('id')
-            ->first();
+        $result = DB::selectOne(
+            "SELECT COALESCE(MAX(CAST(SUBSTRING(journal_number FROM ?) AS INTEGER)), 0) + 1 AS next_num
+             FROM journals
+             WHERE journal_number LIKE ?
+             FOR UPDATE",
+            [strlen($prefix) + 1, $prefix . '%']
+        );
 
-        if ($lastJournal) {
-            $lastNumber = (int) substr($lastJournal->journal_number, strlen($prefix));
-            $nextNumber = $lastNumber + 1;
-        } else {
-            $nextNumber = 1;
-        }
-
-        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        return $prefix . str_pad($result->next_num, 5, '0', STR_PAD_LEFT);
     }
 }

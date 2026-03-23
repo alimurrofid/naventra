@@ -1,5 +1,7 @@
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
+import ConfirmationService from 'primevue/confirmationservice';
+import ToastService from 'primevue/toastservice';
 import type { App } from 'vue';
 
 export function setupPrimeVue(app: App) {
@@ -128,4 +130,7 @@ export function setupPrimeVue(app: App) {
       }
     }
   });
+
+  app.use(ConfirmationService);
+  app.use(ToastService);
 }

@@ -22,7 +22,7 @@ class MCoaController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->input('per_page', 15);
+        $perPage = min((int) $request->input('per_page', 15), 100);
 
         return response()->json([
             'status'  => 'success',

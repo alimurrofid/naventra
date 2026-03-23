@@ -35,8 +35,8 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Message from 'primevue/message';
 
-const email = ref('admin@admin.com'); // Pre-filled for testing
-const password = ref('password');
+const email = ref(import.meta.env.DEV ? 'admin@admin.com' : '');
+const password = ref(import.meta.env.DEV ? 'password' : '');
 const loading = ref(false);
 const errorMsg = ref('');
 

@@ -59,11 +59,22 @@ class TKbkService extends BaseService
                 'status'             => 'posted',
             ]);
 
-            // 2. Create detail lines
+            // 2. Create detail lines using Bulk Insert (P-02)
+            $detailData = [];
+            $now = now();
+            $userId = \Illuminate\Support\Facades\Auth::id();
+
             foreach ($dto->details as $detail) {
                 /** @var TKbkDetailDTO $detail */
-                $transaction->details()->create($detail->toArray());
+                $detailData[] = array_merge($detail->toArray(), [
+                    'kbk_id'     => $transaction->id,
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
             }
+            \App\Modules\Accounting\Transaction\TKbk\Models\TKbkDetail::insert($detailData);
 
             // 3. DIRECT CALL to JournalEngine (core accounting logic)
             $journalDto = new JournalDTO(

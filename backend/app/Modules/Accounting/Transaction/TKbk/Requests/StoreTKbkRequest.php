@@ -11,8 +11,7 @@ class StoreTKbkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // TODO: Implement RBAC authorization
-        return true;
+        return $this->user()?->can('accounting.t_kbk.create') ?? false;
     }
 
     /**

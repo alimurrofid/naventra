@@ -31,7 +31,7 @@ class MCoaRepository extends BaseRepository
     {
         return $this->query()
             ->whereNull('parent_id')
-            ->with('children')
+            ->with('children.children.children.children') // Eager load up to 4 levels deep
             ->orderBy('code')
             ->get();
     }

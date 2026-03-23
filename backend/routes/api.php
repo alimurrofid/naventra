@@ -20,9 +20,10 @@ Route::get('/health', function () {
     ]);
 });
 
-// Auth Routes
-Route::post('/login', [\App\Modules\Auth\Controllers\AuthController::class, 'login']);
-Route::post('/refresh', [\App\Modules\Auth\Controllers\AuthController::class, 'refresh']);
+Route::middleware(['throttle:5,1'])->group(function () {
+    Route::post('/login', [\App\Modules\Auth\Controllers\AuthController::class, 'login']);
+    Route::post('/refresh', [\App\Modules\Auth\Controllers\AuthController::class, 'refresh']);
+});
 
 Route::middleware([\App\Http\Middleware\JwtAuthMiddleware::class])->group(function () {
     Route::post('/logout', [\App\Modules\Auth\Controllers\AuthController::class, 'logout']);

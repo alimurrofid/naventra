@@ -39,18 +39,14 @@ class TKbkRepository extends BaseRepository
      */
     public function generateTransactionNumber(string $prefix = 'KBK'): string
     {
-        $lastTransaction = $this->query()
-            ->where('transaction_number', 'like', $prefix . '%')
-            ->orderByDesc('id')
-            ->first();
+        $result = \Illuminate\Support\Facades\DB::selectOne(
+            "SELECT COALESCE(MAX(CAST(SUBSTRING(transaction_number FROM ?) AS INTEGER)), 0) + 1 AS next_num
+             FROM t_kbk
+             WHERE transaction_number LIKE ?
+             FOR UPDATE",
+            [strlen($prefix) + 1, $prefix . '%']
+        );
 
-        if ($lastTransaction) {
-            $lastNumber = (int) substr($lastTransaction->transaction_number, strlen($prefix));
-            $nextNumber = $lastNumber + 1;
-        } else {
-            $nextNumber = 1;
-        }
-
-        return $prefix . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+        return $prefix . str_pad($result->next_num, 6, '0', STR_PAD_LEFT);
     }
 }

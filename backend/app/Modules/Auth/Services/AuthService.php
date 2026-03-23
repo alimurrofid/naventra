@@ -166,8 +166,6 @@ class AuthService
      */
     private function formatTokenResponse(string $accessToken, string $refreshTokenPlain, User $user): array
     {
-        $rbac = $this->getMe($user);
-        
         /** @var \Tymon\JWTAuth\JWTGuard $guard */
         $guard = auth('api');
         
@@ -175,9 +173,6 @@ class AuthService
             'access_token' => $accessToken,
             'refresh_token' => $refreshTokenPlain,
             'expires_in' => $guard->factory()->getTTL() * 60,
-            'user' => $rbac['user'],
-            'roles' => $rbac['roles'],
-            'permissions' => $rbac['permissions'],
         ];
     }
 }

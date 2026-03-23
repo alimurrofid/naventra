@@ -6,6 +6,8 @@ use App\Common\DTOs\BaseDTO;
 
 class LoginDTO extends BaseDTO
 {
+    protected array $hidden = ['password'];
+
     public function __construct(
         public string $email,
         public string $password,
@@ -17,8 +19,8 @@ class LoginDTO extends BaseDTO
 
     public static function fromRequest(\Illuminate\Http\Request $request): static
     {
-        // Safe arrays from FormRequests should be passed manually or handled via all()
-        return static::fromArray($request->all());
+        // Enforce usage of validated data to prevent mass assignment (M-01)
+        return static::fromArray(method_exists($request, 'validated') ? $request->validated() : $request->all());
     }
 
     public static function fromArray(array $data): static

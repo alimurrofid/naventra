@@ -1,7 +1,10 @@
 <template>
   <router-view />
+  <Toast />
+  <ConfirmDialog />
 </template>
 
 <script setup lang="ts">
-// Root App Component
+import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
 </script>

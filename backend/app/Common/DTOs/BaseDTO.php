@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 abstract class BaseDTO
 {
     /**
+     * Properties that should be hidden when converting to array.
+     */
+    protected array $hidden = [];
+
+    /**
      * Create a DTO instance from a request.
      */
     abstract public static function fromRequest(Request $request): static;
@@ -21,6 +26,9 @@ abstract class BaseDTO
      */
     public function toArray(): array
     {
-        return get_object_vars($this);
+        return array_diff_key(
+            get_object_vars($this),
+            array_flip($this->hidden)
+        );
     }
 }

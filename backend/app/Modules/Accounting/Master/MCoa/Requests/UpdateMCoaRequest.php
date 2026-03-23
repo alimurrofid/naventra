@@ -11,8 +11,7 @@ class UpdateMCoaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // TODO: Implement RBAC authorization
-        return true;
+        return $this->user()?->can('accounting.m_coa.update') ?? false;
     }
 
     /**

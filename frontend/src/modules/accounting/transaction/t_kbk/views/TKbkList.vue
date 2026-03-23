@@ -69,9 +69,13 @@ import BaseCard from '@/core/components/BaseCard.vue';
 import BaseTable from '@/core/components/BaseTable.vue';
 import BaseButton from '@/core/components/BaseButton.vue';
 import Badge from 'primevue/badge';
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 import type { WorkflowAction } from '@/core/composables/useWorkflow';
 
 const tkbkStore = useTKbkStore();
+const confirm = useConfirm();
+const toast = useToast();
 const selectedRows = ref([]);
 
 const columns = [
@@ -181,20 +185,28 @@ const handleAction = async (payload: { action: string, items: any[] }) => {
     // Refresh table and clear selection
     selectedRows.value = [];
     loadData();
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Action completed', life: 3000 });
   } catch (e: any) {
-    alert(e.message);
+    toast.add({ severity: 'error', summary: 'Error', detail: e.message, life: 5000 });
   }
 };
 
-const confirmDelete = async (data: any) => {
-  if (confirm(`Delete transaction ${data.transaction_number}?`)) {
-    try {
-      await tkbkStore.remove(data.id);
-      loadData();
-    } catch (e: any) {
-      alert(e.message);
+const confirmDelete = (data: any) => {
+  confirm.require({
+    message: `Delete transaction ${data.transaction_number}?`,
+    header: 'Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    acceptClass: 'p-button-danger',
+    accept: async () => {
+      try {
+        await tkbkStore.remove(data.id);
+        toast.add({ severity: 'success', summary: 'Deleted', detail: 'Successfully deleted', life: 3000 });
+        loadData();
+      } catch (e: any) {
+        toast.add({ severity: 'error', summary: 'Error', detail: e.message, life: 5000 });
+      }
     }
-  }
+  });
 };
 </script>
 

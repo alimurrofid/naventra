@@ -71,6 +71,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useMCoaStore } from '../store/mcoa.store';
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 import BaseCard from '@/core/components/BaseCard.vue';
 import BaseTable from '@/core/components/BaseTable.vue';
 import BaseButton from '@/core/components/BaseButton.vue';
@@ -79,8 +81,8 @@ import Badge from 'primevue/badge';
 import Dialog from 'primevue/dialog';
 
 const mcoaStore = useMCoaStore();
-// const confirm = useConfirm();
-// const toast = useToast();
+const confirm = useConfirm();
+const toast = useToast();
 
 const selectedRow = ref();
 const formDialog = ref(false);
@@ -104,11 +106,9 @@ const loadData = () => {
   mcoaStore.fetchTree();
 };
 
-const getDepth = (node: any, depth = 0): number => {
-  if (!node.parent_id) return depth;
-  // This is a simplified frontend depth calculation. In a proper tree table, node depth is known.
-  // Assuming the API returns a flattened tree ordered by hierarchy.
-  return depth; 
+const getDepth = (node: any): number => {
+  const parts = node.code?.split('.') || [];
+  return Math.max(parts.length - 1, 0); 
 };
 
 const openForm = (id?: number) => {
@@ -122,15 +122,22 @@ const onSaved = () => {
   loadData();
 };
 
-const confirmDelete = async (data: any) => {
-  if (confirm(`Are you sure you want to delete ${data.name}?`)) {
-    try {
-      await mcoaStore.remove(data.id);
-      loadData();
-    } catch (e: any) {
-      alert(e.message);
+const confirmDelete = (data: any) => {
+  confirm.require({
+    message: `Are you sure you want to delete ${data.name}?`,
+    header: 'Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    acceptClass: 'p-button-danger',
+    accept: async () => {
+      try {
+        await mcoaStore.remove(data.id);
+        toast.add({ severity: 'success', summary: 'Deleted', detail: 'Successfully deleted', life: 3000 });
+        loadData();
+      } catch (e: any) {
+        toast.add({ severity: 'error', summary: 'Error', detail: e.message, life: 5000 });
+      }
     }
-  }
+  });
 };
 </script>
 

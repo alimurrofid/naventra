@@ -26,7 +26,6 @@ export const useAuthStore = defineStore('auth', () => {
     roles.value = [];
     permissions.value = [];
     localStorage.removeItem('token');
-    localStorage.removeItem('refresh_token');
   }
 
   function hasPermission(permission: string): boolean {
@@ -54,14 +53,17 @@ export const useAuthStore = defineStore('auth', () => {
       throw new Error('No access token received');
     }
     setToken(data.access_token);
-    if (data.refresh_token) {
-      localStorage.setItem('refresh_token', data.refresh_token);
-    }
     await fetchMe();
   }
 
-  function logout() {
-    clearAuth();
+  async function logout() {
+    try {
+      await api.post('/logout');
+    } catch {
+      // Best-effort, always clear local state
+    } finally {
+      clearAuth();
+    }
   }
 
   return {
