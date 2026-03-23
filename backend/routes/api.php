@@ -32,4 +32,9 @@ Route::middleware([\App\Http\Middleware\JwtAuthMiddleware::class])->group(functi
     // Core ERP Data Routes
     Route::get('/menu', [\App\Modules\System\Controllers\MenuController::class, 'index']);
     Route::get('/dashboard', [\App\Modules\Dashboard\Controllers\DashboardController::class, 'index']);
+    
+    // Example Module
+    Route::get('/setup/master/examples', [\App\Modules\Setup\Master\Example\Controllers\ExampleController::class, 'index']);
+    Route::post('/setup/master/examples', [\App\Modules\Setup\Master\Example\Controllers\ExampleController::class, 'store']);
+    Route::delete('/setup/master/examples/{id}', [\App\Modules\Setup\Master\Example\Controllers\ExampleController::class, 'destroy']);
 });

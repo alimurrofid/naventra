@@ -12,6 +12,7 @@ import { accountingRoutes } from '@/modules/accounting/accounting.routes';
 import { inventoryRoutes } from '@/modules/inventory/routes';
 import { salesRoutes } from '@/modules/sales/routes';
 import { purchasingRoutes } from '@/modules/purchasing/routes';
+import { setupRoutes } from '@/modules/setup/setup.routes';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -35,7 +36,8 @@ const routes: Array<RouteRecordRaw> = [
       ...accountingRoutes,
       ...inventoryRoutes,
       ...salesRoutes,
-      ...purchasingRoutes
+      ...purchasingRoutes,
+      ...setupRoutes
     ]
   },
   {

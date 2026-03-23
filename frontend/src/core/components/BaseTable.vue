@@ -7,8 +7,9 @@
           <InputIcon class="pi pi-search"> </InputIcon>
           <InputText 
             v-model="filters['global'].value" 
-            placeholder="Keyword Search" 
+            :placeholder="searchPlaceholder" 
             @input="onFilter"
+            id="base-table-search-input"
           />
         </IconField>
 
@@ -121,6 +122,7 @@ interface Props {
   actions?: WorkflowAction[];
   statusField?: string;
   scrollHeight?: string;
+  searchPlaceholder?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -133,7 +135,8 @@ const props = withDefaults(defineProps<Props>(), {
   selectionMode: 'multiple',
   actions: () => [],
   statusField: 'status',
-  scrollHeight: 'flex'
+  scrollHeight: 'flex',
+  searchPlaceholder: 'Keyword Search'
 });
 
 const emit = defineEmits(['page', 'sort', 'filter', 'action', 'update:selection']);

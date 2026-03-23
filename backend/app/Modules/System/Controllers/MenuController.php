@@ -19,6 +19,23 @@ class MenuController extends Controller
                 'permission' => 'dashboard.view'
             ],
             [
+                'label' => 'Setup',
+                'icon' => 'pi pi-cog',
+                'children' => [
+                    [
+                        'label' => 'Master',
+                        'icon' => 'pi pi-folder',
+                        'children' => [
+                            [
+                                'label' => 'Example',
+                                'icon' => 'pi pi-star',
+                                'route' => '/setup/master/examples'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            [
                 'label' => 'Accounting',
                 'icon' => 'pi pi-wallet',
                 'children' => [
@@ -47,7 +64,7 @@ class MenuController extends Controller
                         ]
                     ]
                 ]
-            ]
+            ],
         ];
 
         return response()->json($menu);
